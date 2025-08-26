@@ -11,14 +11,14 @@ AI Bootcamp for Framna colleagues - a 4-week hands-on program designed to train 
 The codebase follows a strict hierarchical structure:
 ```
 material/
--- week_1/
+-- ai-and-lls/
 ----tuesday/        # Prompting Patterns & Structured Outputs
 ----wednesday/      # Orchestration & MCP/Tools  
 ----thursday/       # Retrieval & Context Systems (RAG)
 ----friday/         # Multimodality & Mini Showcase
---week_2/             # Backend, Docker, Cloud Deploy
---week_3/             # Evaluation, Tracing, Fine-Tuning
---week_4/             # Capstone Projects
+--backend-eval-finetuning/             # Backend, Docker, Cloud Deploy
+--hackathon/             # Evaluation, Tracing, Fine-Tuning
+--extra-material/             # Capstone Projects
 ```
 
 Each session contains:
