@@ -1,5 +1,3 @@
-"""Receipt Processing Demo"""
-
 import os
 import json
 from typing import Dict
@@ -7,8 +5,14 @@ from dotenv import load_dotenv
 from extractor import DocumentExtractor
 from models import ExtractionResult
 
-# Load environment variables
 load_dotenv()
+
+
+"""
+Receipt Processing Demo - CLI interface for structured receipt extraction
+Demonstrates OpenAI API structured outputs with Pydantic validation
+Supports sample data processing and interactive receipt entry
+"""
 
 
 class ReceiptProcessingDemo:
@@ -16,45 +20,36 @@ class ReceiptProcessingDemo:
         self.extractor = DocumentExtractor()
 
     def run_demo(self):
-        print("Receipt Expense Categorization Demo")
-        print("=" * 40)
-
         sample_documents = self._get_sample_documents()
-
         if not sample_documents:
             return
 
-        for doc_name, (doc_text, doc_type) in sample_documents.items():
-            print(f"\nProcessing: {doc_name}")
-            result = self.extractor.extract_document(doc_text, doc_type)
+        for doc_name, doc_text in sample_documents.items():
+            result = self.extractor.extract_document(doc_text)
             self._display_result(doc_name, result)
 
-    def _get_sample_documents(self) -> Dict[str, tuple[str, str]]:
+    def _get_sample_documents(self) -> Dict[str, str]:
+        file_path = "../sample_receipt.txt"
         try:
-            with open("material/week_1/tuesday/session_2/sample_receipt.txt", "r") as f:
+            with open(file_path, "r") as f:
                 receipt_text = f.read().strip()
-            return {
-                "Sample Receipt": (receipt_text, "receipt"),
-            }
+            return {"Sample Receipt": receipt_text}
         except FileNotFoundError:
-            print("Error: sample_receipt.txt not found. Please ensure the file exists.")
+            print(f"Error: {file_path} not found")
             return {}
 
     def _display_result(self, doc_name: str, result: ExtractionResult):
         if result.was_successful():
-            print(f"{doc_name}: SUCCESS - Confidence: {result.confidence_score:.2f}")
             doc = result.document
-            if hasattr(doc, "total_amount"):
-                print(f"Total: {doc.currency} {doc.total_amount}")
-            if hasattr(doc, "line_items") and doc.line_items:
-                print(f"Items: {len(doc.line_items)}")
+            print(f"{doc_name}: SUCCESS")
+            print(f"Total: {doc.currency} {doc.total_amount}")
+            print(f"Items: {len(doc.line_items)}")
 
-            # Display expense categories
-            if hasattr(doc, "expense_categories") and doc.expense_categories:
-                print(f"Expense Categories ({len(doc.expense_categories)}):")
+            if doc.expense_categories:
+                print(f"Categories ({len(doc.expense_categories)}):")
                 for category in doc.expense_categories:
                     print(
-                        f"  • {category.category}: {doc.currency} {category.total_amount} ({category.item_count} items)"
+                        f"  • {category.category}: {doc.currency} {category.total_amount}"
                     )
                     for item in category.items:
                         print(f"    - {item}")
@@ -62,9 +57,7 @@ class ReceiptProcessingDemo:
             print(f"{doc_name}: FAILED - {result.error_message}")
 
     def interactive_mode(self):
-        print("\nInteractive Mode - Receipt Processing")
         print("Enter receipt text (type 'END' to finish):")
-        doc_type = "receipt"
 
         lines = []
         while True:
@@ -77,12 +70,11 @@ class ReceiptProcessingDemo:
             return
 
         text = "\n".join(lines)
-        result = self.extractor.extract_document(text, doc_type)
-
+        result = self.extractor.extract_document(text)
         self._display_result("Custom", result)
 
         if result.was_successful():
-            show_json = input("\nShow JSON? (y/n): ").strip().lower()
+            show_json = input("Show JSON? (y/n): ").strip().lower()
             if show_json == "y":
                 print(json.dumps(result.document.model_dump(), indent=2, default=str))
 
@@ -95,12 +87,11 @@ def main():
     demo = ReceiptProcessingDemo()
 
     while True:
-        print("\nReceipt Expense Categorization Demo")
-        print("1. Sample receipt")
-        print("2. Interactive mode (enter your own receipt)")
+        print("\n1. Sample receipt")
+        print("2. Interactive mode")
         print("3. Exit")
 
-        choice = input("\nChoose (1-3): ").strip()
+        choice = input("Choose (1-3): ").strip()
 
         try:
             if choice == "1":

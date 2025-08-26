@@ -1,32 +1,30 @@
-"""
-Data Models for Document Extraction
-Week 1 - Tuesday - Session 2 Lab
-
-Define your Pydantic models here for structured data extraction
-"""
-
 from typing import List, Optional, Literal
 from pydantic import BaseModel, Field, field_validator
 from datetime import date
 from decimal import Decimal
 
 
-class ExpenseCategory(BaseModel):
-    """Categorized expense information"""
+"""
+Pydantic models for structured document extraction with validation
+- ExpenseCategory: Groups receipt items by business expense category
+- LineItem: Individual receipt line with quantity/price validation
+- Receipt: Complete receipt structure with merchant, items, payment data
+- ExtractionResult: API response wrapper with success/error metadata
+"""
 
-    category: str = Field(description="Category name for business expense reporting")
-    total_amount: Decimal = Field(ge=0, description="Total amount for this category")
-    item_count: int = Field(ge=1, description="Number of items in this category")
-    items: List[str] = Field(description="List of item descriptions in this category")
+
+class ExpenseCategory(BaseModel):
+    category: str
+    total_amount: Decimal = Field(ge=0)
+    item_count: int = Field(ge=1)
+    items: List[str]
 
 
 class LineItem(BaseModel):
-    """Individual line item on receipt"""
-
     description: str
-    quantity: int = Field(ge=1, description="Quantity must be positive")
-    unit_price: Decimal = Field(ge=0, description="Price must be non-negative")
-    total_price: Decimal = Field(ge=0, description="Total must be non-negative")
+    quantity: int = Field(ge=1)
+    unit_price: Decimal = Field(ge=0)
+    total_price: Decimal = Field(ge=0)
 
     @field_validator("total_price")
     def validate_total(cls, v, info):
@@ -39,18 +37,13 @@ class LineItem(BaseModel):
 
 
 class Receipt(BaseModel):
-    """Receipt document structure"""
-
-    document_type: Literal["receipt"] = "receipt"
     receipt_number: Optional[str] = None
     transaction_date: date
     transaction_time: Optional[str] = None
 
-    # Merchant info
     merchant_name: str
     merchant_location: Optional[str] = None
 
-    # Items and payment
     line_items: List[LineItem]
     subtotal: Decimal = Field(ge=0)
     tax_rate: Optional[float] = None
@@ -58,18 +51,10 @@ class Receipt(BaseModel):
     total_amount: Decimal = Field(ge=0)
     currency: str = Field(default="USD")
 
-    # Payment details
     payment_method: Optional[Literal["cash", "card", "digital", "other"]] = None
-    card_last_four: Optional[str] = Field(
-        pattern=r"^\d{4}$", description="Last 4 digits of card"
-    )
+    card_last_four: Optional[str] = Field(pattern=r"^\d{4}$")
 
-    # Expense categorization
-    expense_categories: List[ExpenseCategory] = Field(
-        default_factory=list,
-        description="Purchases grouped by category (Food, Beverages, Office Supplies, etc.)",
-    )
-
+    expense_categories: List[ExpenseCategory] = Field(default_factory=list)
     extraction_confidence: float = Field(ge=0.0, le=1.0, default=0.0)
 
     @field_validator("total_amount")
@@ -83,15 +68,10 @@ class Receipt(BaseModel):
 
 
 class ExtractionResult(BaseModel):
-    """Wrapper for extraction results with metadata"""
-
     success: bool
     document: Optional[Receipt] = None
     error_message: Optional[str] = None
-    processing_time: Optional[float] = None
     tokens_used: Optional[int] = None
-
-    # Quality indicators
     confidence_score: float = Field(ge=0.0, le=1.0, default=0.0)
     fields_extracted: int = Field(ge=0, default=0)
     validation_errors: List[str] = Field(default_factory=list)
@@ -100,5 +80,4 @@ class ExtractionResult(BaseModel):
         return self.success and self.document is not None
 
 
-# Helper type for document type
 DocumentType = Receipt

@@ -31,7 +31,7 @@ def analyze_meal_order(order: str) -> MealAnalysis:
     """
     CONCEPT: The LLM returns structured data that tells us what to do next
     """
-    response = client.beta.chat.completions.parse(
+    response = client.responses.parse(
         model="gpt-4.1",
         messages=[
             {
@@ -49,7 +49,7 @@ def analyze_meal_order(order: str) -> MealAnalysis:
         ],
         response_format=MealAnalysis,
     )
-    return response.choices[0].message.parsed
+    return response.output_parsed
 
 
 # Demo: Show how structured output determines next steps
