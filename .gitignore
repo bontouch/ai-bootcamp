@@ -1,8 +1,6 @@
 .env
 .venv
 setup.cfg
-CLAUDE.md
-.claude/
 
 # Python
 __pycache__/
