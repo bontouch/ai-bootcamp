@@ -1,0 +1,61 @@
+Framna Company Q&A Database
+
+Q: What services does Framna offer?
+A: Framna offers digital product strategy and design, frontend and backend development, mobile app development (iOS and Android), cloud infrastructure and DevOps, data analytics and AI integration, and product management consulting.
+
+Q: What is Framna's main technology stack?
+A: Frontend: React, Next.js, TypeScript, Tailwind CSS. Backend: Node.js, Python, FastAPI, GraphQL. Mobile: React Native, Swift, Kotlin. Cloud: AWS, Azure, Docker, Kubernetes. Databases: PostgreSQL, MongoDB, Redis. AI/ML: OpenAI API, LangChain, vector databases.
+
+Q: Where is Framna located?
+A: Framna is based in Stockholm, Sweden with a remote-first work policy allowing employees to work from anywhere in Europe.
+
+Q: When was Framna founded?
+A: Framna was founded in 2019.
+
+Q: How many employees does Framna have?
+A: Framna has grown to over 30 employees including developers, designers, product managers, and data scientists.
+
+Q: What are Framna's company values?
+A: 1. Innovation through technology, 2. Sustainable and ethical business practices, 3. Collaborative teamwork, 4. Continuous learning and development, 5. Customer-centric approach.
+
+Q: What notable projects has Framna worked on?
+A: E-commerce platform for sustainable fashion brands, healthcare data visualization dashboard for medical professionals, fintech mobile app for cryptocurrency trading, and AI-powered content recommendation system for media companies.
+
+Q: What is Framna's company culture like?
+A: The company culture emphasizes continuous learning, innovation, and collaborative problem-solving.
+
+Q: What recent initiatives has Framna launched?
+A: AI Bootcamp program for employee skill development, partnership with several AI startups, open source contributions to React and Python communities, and carbon-neutral hosting for all client projects.
+
+Q: What is Framna's remote work policy?
+A: Framna has a remote-first work policy allowing employees to work from anywhere in Europe.
+
+Q: What industries does Framna work with?
+A: Framna works with forward-thinking companies across various industries including fashion, healthcare, fintech, and media.
+
+Q: What databases does Framna use?
+A: Framna uses PostgreSQL, MongoDB, and Redis.
+
+Q: What cloud platforms does Framna use?
+A: Framna uses AWS and Azure for cloud infrastructure.
+
+Q: What mobile development technologies does Framna use?
+A: Framna develops mobile apps using React Native, Swift, and Kotlin.
+
+Q: Does Framna contribute to open source?
+A: Yes, Framna makes open source contributions to React and Python communities.
+
+Q: What makes Framna environmentally conscious?
+A: Framna implements carbon-neutral hosting for all client projects and follows sustainable and ethical business practices.
+
+Q: What AI technologies does Framna use?
+A: Framna uses OpenAI API, LangChain, and vector databases for AI/ML implementations.
+
+Q: What frontend frameworks does Framna prefer?
+A: Framna primarily uses React, Next.js, TypeScript, and Tailwind CSS for frontend development.
+
+Q: What backend technologies does Framna use?
+A: Framna uses Node.js, Python, FastAPI, and GraphQL for backend development.
+
+Q: Does Framna offer consulting services?
+A: Yes, Framna offers product management consulting in addition to development services.

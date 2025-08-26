@@ -1,0 +1,22 @@
+.env
+.venv
+setup.cfg
+CLAUDE.md
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+
+# Python virtual environments
+venv/
+
+# Python cache
+.cache/
+
+# Python build
+build/
