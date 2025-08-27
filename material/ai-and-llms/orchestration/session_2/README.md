@@ -1,153 +1,124 @@
-# Meal Price Calculator Agent Lab
+# Meal Nutrition Estimator Agent Lab
 
 ## Learning Objectives
 
-- Build multi-agent systems using OpenAI Agents SDK
+- Building a multi-agent systems using OpenAI Agents SDK
 - Orchestrate tools: WebSearch, calculator functions, and agent-as-tool patterns  
-- Understand agent coordination and error handling
-- Apply orchestration concepts to real-world scenarios
+- Understanding the usefulness of dividing a problem into smaller problems, each solvable by a specialist tool/agent
 
 ## The Challenge
 
-Create a **Meal Price Calculator Agent** that processes complex food orders and returns total cost with budget context.
+Create a **Meal Nutrition Estimator Agent** that processes complex food orders and returns total calories with health context.
 
 **Example Input:** "Big Mac + medium fries + Coke"  
-**Expected Output:** "That's about 90 SEK total, roughly a mid-range fast food meal."
+**Expected Output:** "That's about 850 calories total, a hearty meal."
 
-## Agent Architecture
+Build the system by implementing:
 
-### Main Price Calculator Agent
-**Tools available:**
-- **WebSearchTool** (built-in): Search for pricing data online
-- **Calculator function** (custom): Sum prices and calculate budget categories  
-- **Food Parser Agent** (agent-as-tool): Break complex orders into items
+1. **Calculator tools** (`tools.py`) - Sum calories and categorize health impact
+2. **Parser agent** (`parser_agent.py`) - Break complex orders into searchable items  
+3. **Main agent** (`nutrition_agent.py`) - Orchestrate all tools with clear instructions
+4. **CLI interface** (`main.py`) - Process sample queries and display results
 
-### Food Parser Agent
-**Purpose:** Convert complex food orders into searchable items
-- Input: "Big Mac meal" 
-- Output: ["Big Mac", "McDonald's medium fries", "medium Coca-Cola"]
+## System Architecture
 
-## Task Overview
+### Why This Multi-Agent Approach?
 
-Build a system that:
+A single agent trying to parse orders, search nutrition data, and calculate totals easily becomes overwhelmed and error-prone. The example is a toy example but it shows how specialized agents and tools can work together to handle different aspects of a problem.
 
-1. **Parses complex food orders** using a specialist agent
-2. **Searches for pricing data** using web search for each item
-3. **Calculates totals** using custom calculator functions
-4. **Provides budget context** about meal cost categories
+### 1. Food Parser Agent
+This agent breaks complex orders into searchable nutrition items  
 
-## Key Technical Requirements
+```python
+# Input: "Big Mac meal"
+# Output: ["Big Mac", "McDonald's medium fries", "medium Coca-Cola"]
 
-### 1. Agent Coordination
-- Main agent coordinates multiple tools and sub-agents
-- Food parser agent used as tool for complex order breakdown
-- Error handling when searches fail or items aren't found
+parser_agent = Agent(
+    name="food_parser",
+    instructions="""
+    You are a food parsing specialist. Break complex orders into individual items.
+    - "Thai curry with rice" → ["Thai green curry", "jasmine rice portion"]
+    - Include restaurant chains when mentioned
+    - Specify portion sizes when available
+    """
+)
+```
 
-### 2. Tool Functions
+### 2. Web Search Tool  
+We use a search tool to find nutrition data for individual food items that an LLM otherwise will be prone to hallucinate.
+
+```python
+# Search strategy in main agent instructions:
+# - Search for "{food item} calories nutrition facts"
+# - Prefer USDA database, official restaurant data
+# - Extract "calories per serving" carefully
+```
+
+### 3. Calculator Tool
+We want to use a tool to sum calories since LLMs are very bad at arithmetics. We also provide a health categorization with advice as a fun extension of the tool.
+
 ```python
 from agents import function_tool
 from pydantic import BaseModel
 
-class MealPriceResult(BaseModel):
-    total_price: float
-    budget_category: str
-    budget_advice: str
+class NutritionResult(BaseModel):
+    total_calories: int
+    health_category: str  # "light", "moderate", "heavy"
+    health_advice: str
 
 @function_tool
-def calculate_meal_price(price_list: List[float]) -> MealPriceResult:
-    """Calculate total price and budget category"""
-    # Return structured result
-
-@function_tool
-def categorize_meal_budget(price: float) -> str:
-    """Categorize meal cost: budget, moderate, expensive"""
+def calculate_calories(calorie_list: List[int]) -> NutritionResult:
+    total = sum(calorie_list)
+    category = "light" if total < 400 else "moderate" if total < 800 else "heavy"
+    advice = get_health_advice(total)
+    return NutritionResult(total, category, advice)
 ```
 
-### 3. Agent Integration
-```python
-from agents import Agent, WebSearchTool, Runner
+### 4. Main Nutrition Agent
+The main agent is the entry point of the system and orchestrate calls to other agents and tools to complete the full workflow. The state handling and calling logic is abstracted by the OpenAI SDK, meaning you mainly need to focus on the instructions to the AI.
 
-# Food parser as agent tool
-parser_agent = Agent(name="food_parser", instructions="...")
-main_agent = Agent(
+```python
+nutrition_agent = Agent(
+    name="nutrition_estimator",
+    # These instructions set the agenda of the task at hand and is
+    # what will control the approach and when the system consider
+    # itself finished with the task
+    instructions="""
+    Your workflow:
+    1. Use food_parser tool to break complex orders into items
+    2. Use web_search to find nutrition data for each item  
+    3. Extract calorie numbers from search results
+    4. Use calculate_calories to sum totals and get health advice
+    5. Format results clearly with breakdown and advice
+    """,
+    # Supply tools (and agents) below to let the agent
+    # solve the workflow describe in the instructions
     tools=[
-        parser_agent.as_tool(),
-        WebSearchTool(), 
-        calculate_meal_price
+        parser_agent.as_tool(tool_name="food_parser"),
+        WebSearchTool(),
+        calculate_calories
     ]
 )
-
-# Run the agent
-result = Runner.run_sync(main_agent, "Calculate price for Big Mac meal")
-print(result.final_output)
 ```
 
 ## Expected Workflow
 
 1. **User Input:** "Thai green curry with jasmine rice"
-2. **Parser Agent:** → ["Thai green curry", "jasmine rice portion"]  
-3. **Web Search:** Search pricing data for each item
-4. **Calculator:** Sum prices and determine budget category
-5. **Budget Context:** Generate advice about meal cost
+2. **Parser Agent:** → ["jasmine rice portion", "coconut milk", "Thai basil", "chicken breast"] 
+3. **Web Search:** Find calories for each item from nutrition databases online
+4. **Calculator:** Sum calories (420 + 230 = 650) and give e.g. "moderate" category
+5. **Health Context:** "Balanced meal. Appropriate for most people"
 
 **Sample Output:**
 ```
 🥘 Thai green curry with jasmine rice
-Total: 145 SEK
+Total: 650 calories
 
-Breakdown:
-• Thai green curry: 95 SEK
-• Jasmine rice portion: 50 SEK  
-
-📊 That's a moderate-priced restaurant meal.
-💡 Good value for a full meal - typical for Thai restaurants in Sweden.
+📊 That's a moderate-calorie restaurant meal.
+💡 Balanced meal - appropriate for most people's daily intake.
 ```
 
-## Files Provided
+## Tracing
+The agents are making multiple calls under the hood that's not seen in the code. All this can be "traced" in the OpenAI log console: https://platform.openai.com/logs?api=traces
 
-- `meal_queries.txt` - Test meal combinations to process
-- `starter_code/price_agent.py` - Main agent template with TODOs
-- `starter_code/parser_agent.py` - Food parser agent template  
-- `starter_code/tools.py` - Calculator functions template
-- `starter_code/main.py` - CLI interface template
-
-## Getting Started
-
-```bash
-uv add openai-agents pydantic
-export OPENAI_API_KEY="your-key"
-python main.py
-```
-
-## Implementation Strategy
-
-### Phase 1: Build Tools (30 min)
-- Implement price calculator functions
-- Test with sample data
-
-### Phase 2: Food Parser Agent (45 min)  
-- Create agent that breaks down complex orders
-- Test with various meal types
-
-### Phase 3: Main Agent (60 min)
-- Integrate WebSearch, calculator, and parser agent
-- Handle tool coordination and errors
-
-### Phase 4: Refinement (45 min)
-- Test with provided meal queries
-- Improve error handling and user experience
-
-## Success Criteria
-
-✅ **Agent Coordination** - Parser agent works as tool for main agent  
-✅ **Web Search Integration** - Finds real pricing data online  
-✅ **Calculator Tools** - Accurate price totals and budget categories  
-✅ **Error Handling** - Graceful failures when items not found  
-✅ **Budget Context** - Meaningful advice about meal cost  
-
-## Challenge Extensions
-
-- **Multiple portion sizes** - Handle "large", "small" modifiers  
-- **Restaurant chains** - Specify "McDonald's Big Mac" vs generic
-- **Currency conversion** - Support different currencies
-- **Location-based pricing** - Consider regional price differences
+![OpenAI Log Tracing](openai_log_tracing.png)

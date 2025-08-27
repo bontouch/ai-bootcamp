@@ -1,7 +1,3 @@
-"""
-Food Parser Agent - Complete Implementation
-"""
-
 from agents import Agent, Runner
 
 
@@ -26,10 +22,13 @@ def create_food_parser_agent() -> Agent:
 
     Examples:
     - "Big Mac meal" → ["Big Mac", "McDonald's medium fries", "medium Coca-Cola"]
-    - "Thai green curry with rice" → ["Thai green curry", "jasmine rice portion"]
-    - "chicken caesar salad with croutons" → ["chicken caesar salad", "croutons"]
-    - "large pizza margherita extra cheese" → ["large margherita pizza with extra
-    cheese"]
+    - "Thai green curry with rice" → ["jasmine rice portion", "coconut milk", "Thai basil", "chicken breast"]
+    - "chicken caesar salad with croutons" → ["grilled chicken breast", "caesar salad lettuce", "parmesan cheese", "caesar dressing", "bread croutons"]
+    - "large pizza margherita extra cheese" → ["large pizza dough", "tomato sauce", "mozzarella cheese", "extra mozzarella cheese", "fresh basil"]
+    - "spaghetti carbonara" → ["spaghetti pasta", "bacon bits", "eggs", "parmesan cheese", "black pepper", "olive oil"]
+    - "chicken burrito bowl" → ["grilled chicken", "cilantro lime rice", "black beans", "corn salsa", "cheese", "sour cream", "guacamole"]
+    - "veggie burger with fries" → ["veggie patty", "burger bun", "lettuce", "tomato", "pickles", "french fries", "ketchup"]
+    - "Greek salad" → ["mixed greens", "feta cheese", "olives", "cucumber", "tomatoes", "red onion", "olive oil dressing"]
 
     Always return just the list of food items, one per line, without bullets or numbers.
     """

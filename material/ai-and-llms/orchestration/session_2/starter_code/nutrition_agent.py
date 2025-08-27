@@ -1,51 +1,51 @@
-"""
-Main Nutrition Agent - Orchestrates food parsing, web search, and calculations
-"""
-
-from agents import Agent, WebSearchTool
+from agents import Agent, WebSearchTool, Runner
 from parser_agent import create_food_parser_agent
-from tools import calculate_calories, format_nutrition_summary
+from tools import calculate_calories
 
 
 def create_nutrition_agent() -> Agent:
     """
-    Create the main nutrition agent with all tools.
+    Create the main nutrition estimator agent with all tools.
 
     Returns:
         Agent configured with WebSearch, calculator tools, and parser agent
-
-    TODO: Implement the main nutrition agent
     """
-
     # TODO: Create the food parser agent
     parser_agent = create_food_parser_agent()
 
-    # TODO: Define instructions for the main agent
+    # TODO: Write instructions for the nutrition estimator agent
+    # Hints for writing effective agent instructions:
+    # - Define the agent's role (nutrition estimator)
+    # - Outline a clear 4-5 step workflow
+    # - Specify search strategy (what to search for, which sources to trust)
+    # - Include guidance on data extraction (calories per serving, portion sizes)
+    # - Emphasize accuracy and double-checking results
+
     instructions = """
-    TODO: Write instructions for the nutrition agent
-    
-    You are a nutrition estimator that helps users understand the calorie content of their food.
-    
-    Your workflow:
-    1. Use the food_parser tool to break complex orders into individual items
-    2. Use web_search to find calorie information for each food item  
-    3. Use calculate_calories to sum totals and get daily percentage
-    4. Provide helpful health context about the calorie amount
-    
-    Always be accurate with nutrition data and provide realistic health advice.
+    TODO: Write comprehensive instructions for the nutrition agent
+
+    Consider including:
+    - Agent role and purpose
+    - Step-by-step workflow using available tools
+    - Search strategy for finding nutrition data
+    - Data extraction guidelines
+    - Quality and accuracy requirements
     """
 
-    # TODO: Create and configure the main agent with tools
+    # TODO: Create and configure the nutrition agent with tools
     nutrition_agent = Agent(
         name="nutrition_estimator",
         instructions=instructions,
         tools=[
             # TODO: Add the parser agent as a tool
-            # parser_agent.as_tool(...),
+            # This tool breaks complex orders into individual searchable items
+            # Hint: Use parser_agent.as_tool(tool_name="food_parser", tool_description="...")
             # TODO: Add WebSearchTool for nutrition lookups
-            # WebSearchTool(),
-            # TODO: Add calculator function
-            # calculate_calories,
+            # This tool searches the web for nutrition information
+            # Hint: Import and instantiate WebSearchTool()
+            # TODO: Add calculator function for calorie totaling
+            # This tool sums calories and provides health categorization
+            # Hint: Use the calculate_calories function imported from tools
         ],
     )
 
@@ -53,47 +53,15 @@ def create_nutrition_agent() -> Agent:
 
 
 def estimate_nutrition(food_order: str) -> str:
-    """
-    Main function to estimate nutrition for a food order.
-
-    Args:
-        food_order: Complex food order string
-
-    Returns:
-        Formatted nutrition summary
-
-    TODO: Implement the nutrition estimation workflow
-    """
-
-    # TODO: Create the nutrition agent
-    agent = create_nutrition_agent()
-
-    # TODO: Process the food order through the agent
-    # This should trigger the full workflow:
-    # 1. Parse food order
-    # 2. Search for nutrition data
-    # 3. Calculate totals
-    # 4. Format results
+    # TODO: Instantiate the nutrition agent
 
     try:
-        # TODO: Run the agent with the food order
-        response = "TODO: Implement agent execution"
-        return response
+        # TODO: Create simple prompt and run the agent
+        # Hint: The agent instructions contain the full workflow,
+        # so just ask for the calorie calculation
+        # Use: Runner.run_sync(agent, prompt)
+
+        return "TODO: Implement agent execution"
 
     except Exception as e:
         return f"❌ Error processing food order: {str(e)}"
-
-
-# Test the nutrition agent
-if __name__ == "__main__":
-    test_orders = [
-        "Big Mac + medium fries + Coke",
-        "Thai green curry with jasmine rice",
-        "chicken caesar salad",
-    ]
-
-    for order in test_orders:
-        print(f"🍽️  Order: {order}")
-        result = estimate_nutrition(order)
-        print(f"📊 Result: {result}")
-        print("-" * 50)

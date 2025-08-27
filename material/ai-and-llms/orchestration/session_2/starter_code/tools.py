@@ -1,71 +1,46 @@
-"""
-Calculator tools for meal price agent
-"""
-
 from typing import List
 from pydantic import BaseModel
 from agents import function_tool
 
 
-class MealPriceResult(BaseModel):
-    """Result from meal price calculation"""
-    total_price: float
-    budget_category: str
-    budget_advice: str
+class NutritionResult(BaseModel):
+    total_calories: int
+    health_category: str
+    health_advice: str
 
 
 @function_tool
-def calculate_meal_price(price_list: List[float]) -> MealPriceResult:
-    """
-    Calculate total price and budget category.
-    
-    Args:
-        price_list: List of price values for each food item
-        
-    Returns:
-        MealPriceResult with total price, budget category, and budget advice
-        
-    TODO: Implement this function
-    - Calculate total price
-    - Determine budget category (budget/moderate/expensive)
-    - Generate appropriate budget advice based on total
-    """
-    # TODO: Sum all prices in the list
-    total_price = 0.0
-    
-    # TODO: Determine budget category using categorize_meal_budget()
-    budget_category = ""
-    
-    # TODO: Generate budget advice based on price amount
-    budget_advice = ""
-    
-    return MealPriceResult(
-        total_price=total_price,
-        budget_category=budget_category,
-        budget_advice=budget_advice
+def calculate_calories(calorie_list: List[int]) -> NutritionResult:
+    # TODO: Sum all calories in the list
+    total_calories = 0
+
+    # TODO: Categorize the meal health based on total calories
+    # Hint: Use the categorize_meal_health() helper function
+    health_category = ""
+
+    # TODO: Generate appropriate health advice based on calorie amount
+    # Consider different ranges:
+    # - < 300: Light meal advice
+    # - 300-600: Balanced meal advice
+    # - 600-900: Hearty meal advice
+    # - 900-1200: High-calorie meal advice
+    # - > 1200: Very high calorie meal advice
+    health_advice = ""
+
+    return NutritionResult(
+        total_calories=total_calories,
+        health_category=health_category,
+        health_advice=health_advice,
     )
 
 
-@function_tool
-def categorize_meal_budget(price: float) -> str:
+def categorize_meal_health(calories: int) -> str:
     """
-    Categorize meal cost into budget ranges.
-    
-    Args:
-        price: Total meal price in SEK
-        
-    Returns:
-        Budget category string
-        
-    TODO: Implement price categorization
-    - budget: < 50 SEK
-    - moderate: 50-150 SEK  
-    - expensive: > 150 SEK
+    Categorize meal calories into health ranges.
     """
-    # TODO: Implement categorization logic
+    # TODO: Return appropriate category based on calorie ranges
+    # Suggested categories:
+    # - "light": < 400 calories
+    # - "moderate": 400-800 calories
+    # - "heavy": > 800 calories
     return "moderate"
-
-
-# Note: Removed format_price_summary function to avoid Pydantic schema issues
-# TODO: The agent should handle formatting in its instructions instead
-# You can create helper functions without @function_tool if needed for internal use

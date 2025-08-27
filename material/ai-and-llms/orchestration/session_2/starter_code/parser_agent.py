@@ -1,7 +1,3 @@
-"""
-Food Parser Agent - Breaks complex food orders into searchable items
-"""
-
 from agents import Agent, Runner
 
 
@@ -11,43 +7,42 @@ def create_food_parser_agent() -> Agent:
 
     Returns:
         Agent configured to parse food orders into individual items
-
-    TODO: Implement the food parser agent
     """
 
-    # TODO: Define clear instructions for the agent
+    # TODO: Write instructions for the food parsing specialist agent
+    # Hints for effective parsing instructions:
+    # - Define the agent's role (food parsing specialist)
+    # - Specify the goal (break complex orders into individual searchable items)
+    # - Include parsing guidelines:
+    #   * Break complex orders into components
+    #   * Be specific about restaurant chains when mentioned
+    #   * Include portion sizes when specified
+    #   * Return simple list format
+    #   * Don't add items that weren't mentioned
+    # - Provide concrete examples showing input → output transformations
+    # - Specify the exact output format (list of items, one per line)
+
     instructions = """
-    TODO: Write instructions for the food parser agent
-    
-    The agent should:
-    - Take complex food orders like "Big Mac meal" or "Thai curry with rice"
-    - Break them down into individual, searchable food items
-    - Be specific about portions and restaurant chains when possible
-    - Return a simple list of food items that can be searched for pricing data
-    
-    Examples:
-    - "Big Mac meal" → ["Big Mac", "McDonald's medium fries", "medium Coca-Cola"]
-    - "Thai curry with rice" → ["Thai green curry", "jasmine rice portion"]
+    TODO: Write comprehensive instructions for the food parser agent
+
+    Consider including:
+    - Agent role and purpose
+    - Parsing guidelines and rules
+    - Specific examples with different food types:
+      * Fast food meals
+      * International cuisine
+      * Salads and complex dishes
+      * Pizza with toppings
+      * Pasta dishes
+      * Burrito bowls
+      * Burgers with sides
+      * Greek/Mediterranean dishes
+    - Output format specification
     """
 
-    # TODO: Create and return the Agent
     parser_agent = Agent(
         name="food_parser",
         instructions=instructions,
     )
 
     return parser_agent
-
-
-# Test the parser agent
-if __name__ == "__main__":
-    parser = create_food_parser_agent()
-
-    test_orders = ["Big Mac meal", "Thai green curry with rice", "chicken caesar salad"]
-
-    for order in test_orders:
-        print(f"Order: {order}")
-        # TODO: Test the parser agent with sample orders
-        # result = Runner.run_sync(parser, f"Parse this food order: {order}")
-        # print(f"Parsed: {result.final_output}")
-        print()

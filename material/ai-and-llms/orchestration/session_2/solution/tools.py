@@ -1,71 +1,47 @@
-"""
-Calculator tools for meal price agent - Complete Implementation
-"""
-
 from typing import List
 from pydantic import BaseModel
 from agents import function_tool
 
 
-class MealPriceResult(BaseModel):
-    """Result from meal price calculation"""
-
-    total_price: float
-    budget_category: str
-    budget_advice: str
+class NutritionResult(BaseModel):
+    total_calories: int
+    health_category: str
+    health_advice: str
 
 
 @function_tool
-def calculate_meal_price(price_list: List[float]) -> MealPriceResult:
-    """
-    Calculate total price and budget category.
+def calculate_calories(calorie_list: List[int]) -> NutritionResult:
+    total_calories = sum(calorie_list)
+    health_category = categorize_meal_health(total_calories)
 
-    Args:
-        price_list: List of price values for each food item
-
-    Returns:
-        MealPriceResult with total price, budget category, and budget advice
-    """
-    total_price = sum(price_list)
-    budget_category = categorize_meal_budget(total_price)
-
-    # Generate budget advice based on price amount
-    if total_price < 30:
-        budget_advice = "Very budget-friendly - great value for money!"
-    elif total_price < 50:
-        budget_advice = "Budget meal - good option for everyday dining."
-    elif total_price < 100:
-        budget_advice = "Moderate price - typical for casual dining."
-    elif total_price < 200:
-        budget_advice = "Higher-end meal - good for special occasions."
+    # Generate health advice based on calorie amount
+    if total_calories < 300:
+        health_advice = "Light meal - great for snacks or weight management."
+    elif total_calories < 600:
+        health_advice = "Balanced meal - appropriate for most people."
+    elif total_calories < 900:
+        health_advice = "Hearty meal - good for active individuals or main meals."
+    elif total_calories < 1200:
+        health_advice = (
+            "High-calorie meal - consider for post-workout or special occasions."
+        )
     else:
-        budget_advice = "Premium dining experience - quite expensive."
+        health_advice = "Very high calorie meal - should be consumed mindfully."
 
-    return MealPriceResult(
-        total_price=total_price,
-        budget_category=budget_category,
-        budget_advice=budget_advice,
+    return NutritionResult(
+        total_calories=total_calories,
+        health_category=health_category,
+        health_advice=health_advice,
     )
 
 
-@function_tool
-def categorize_meal_budget(price: float) -> str:
+def categorize_meal_health(calories: int) -> str:
     """
-    Categorize meal cost into budget ranges.
-
-    Args:
-        price: Total meal price in SEK
-
-    Returns:
-        Budget category string
+    Categorize meal calories into health ranges.
     """
-    if price < 50:
-        return "budget"
-    elif price < 150:
+    if calories < 400:
+        return "light"
+    elif calories < 800:
         return "moderate"
     else:
-        return "expensive"
-
-
-# Note: Removed format_price_summary function to avoid Pydantic schema issues
-# The agent will handle formatting in its instructions instead
+        return "heavy"
