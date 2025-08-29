@@ -25,4 +25,7 @@ dependencies = [
     "rich>=14.1.0",
     "tqdm>=4.67.1",
     "matplotlib>=3.10.5",
+    "opencv-python>=4.11.0.86",
+    "ultralytics>=8.3.189",
+    "seaborn>=0.13.2",
 ]
